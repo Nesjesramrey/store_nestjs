@@ -13,9 +13,12 @@ import {
 } from '@nestjs/common';
 
 import { Response } from 'express';
+import { ProductsService } from 'src/services/products.service';
 
 @Controller('products')
 export class ProductsController {
+  constructor(private productsService: ProductsService) {}
+
   @Get('filter')
   getProductFilter() {
     return {
@@ -30,10 +33,11 @@ export class ProductsController {
   //al utilizar el parametro dentro del decorador de params ya solo se llama el mismo en el return
   @Get(':productId')
   @HttpCode(HttpStatus.ACCEPTED)
-  getProduct(@Res() response: Response, @Param('productId') productId: string) {
-    response.status(200).send({
-      message: `product ${productId}`,
-    });
+  getProduct(@Param('productId') productId: string) {
+    // response.status(200).send({
+    //   message: `product ${productId}`,
+    // });
+    return this.productsService.findOne(+productId);
   }
 
   // @Get('/products/')
@@ -48,32 +52,37 @@ export class ProductsController {
     @Query('offset') offset = 0,
     @Query('brand') brand: string,
   ) {
-    return {
-      message: `product limit => ${limit} offset=> ${offset} brand=> ${brand}`,
-    };
+    // Se comenta esta parte para aplicar el service
+    // return {
+    //   message: `product limit => ${limit} offset=> ${offset} brand=> ${brand}`,
+    // };
+    return this.productsService.findAll();
   }
   @Post()
   create(@Body() payload: any) {
-    return {
-      message: 'accion de crear',
-      payload,
-    };
+    // return {
+    //   message: 'accion de crear',
+    //   payload,
+    // };
+    return this.productsService.create(payload);
   }
 
   @Put(':id')
   update(@Param('id') id: number, @Body() payload: any) {
-    return {
-      message: 'update',
-      id,
-      payload,
-    };
+    // return {
+    //   message: 'update',
+    //   id,
+    //   payload,
+    // };
+    return this.productsService.update(+id, payload);
   }
 
   @Delete(':id')
   delete(@Param('id') id: number) {
-    return {
-      message: 'delete',
-      id,
-    };
+    // return {
+    //   message: 'delete',
+    //   id,
+    // };
+    return this.productsService.remove(+id);
   }
 }
