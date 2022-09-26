@@ -10,9 +10,12 @@ import {
   HttpCode,
   HttpStatus,
   Res,
+  //ParseIntPipe,
 } from '@nestjs/common';
 
 import { Response } from 'express';
+import { ParseIntPipe } from '@nestjs/common';
+
 import { ProductsService } from 'src/services/products.service';
 
 @Controller('products')
@@ -33,11 +36,11 @@ export class ProductsController {
   //al utilizar el parametro dentro del decorador de params ya solo se llama el mismo en el return
   @Get(':productId')
   @HttpCode(HttpStatus.ACCEPTED)
-  getProduct(@Param('productId') productId: string) {
+  getProduct(@Param('productId', ParseIntPipe) productId: number) {
     // response.status(200).send({
     //   message: `product ${productId}`,
     // });
-    return this.productsService.findOne(+productId);
+    return this.productsService.findOne(productId);
   }
 
   // @Get('/products/')
